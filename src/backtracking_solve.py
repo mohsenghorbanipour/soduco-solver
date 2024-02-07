@@ -1,5 +1,29 @@
 def solve_sudoku_with_cages(sudoku_board, cage_info):
-    #todo
+    variables = {}
+    domains = {}
+    constraints_list = generate_constraints()  # Generate all constraints
+
+    # Define variables and domains
+    for i in range(9):
+        for j in range(9):
+            variables[f"cell_{i}_{j}"] = range(1, 10)
+            domains[f"cell_{i}_{j}"] = range(1, 10)
+
+    # Define constraints for cage totals
+    cage_constraints = []
+    for cage in cage_info:
+        cells, total_value = cage
+        cage_cells = [f"cell_{i // 9}_{i % 9}" for i in cells]
+        cage_constraints.append((cage_cells, total_value))
+
+    # Solve Sudoku
+    solution = recursive_backtracking({}, variables, domains, constraints_list, cage_constraints)
+    if solution:
+        for i in range(9):
+            for j in range(9):
+                sudoku_board[i][j] = solution[f"cell_{i}_{j}"]
+        return sudoku_board
+    else:
         return None
 
 def recursive_backtracking(assignment, variables, domains, constraints, cage_constraints):
