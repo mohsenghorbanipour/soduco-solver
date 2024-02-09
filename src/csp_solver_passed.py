@@ -72,53 +72,28 @@ class KillerSudokuCSP:
 
 
 
-sudoku_board = [
-    [0, 8, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 5, 0, 0],
-    [0, 0, 0, 0, 0, 5, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 8, 0, 0],
-    [4, 0, 0, 9, 0, 0, 0, 0, 0],
-    [0, 0, 1, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 7, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 2, 0, 8, 0]
-]
+def read_input(filename):
+    with open(filename, 'r') as file:
+        content = file.read().splitlines()
 
-cages = [
-    {'cells': [(0, 0), (1, 0)], 'sum': 13},
-    {'cells': [(0, 1), (1, 1),(2, 1), (2, 2)], 'sum': 21},
-    {'cells': [(0, 2), (0, 3), (1, 2)], 'sum': 16},
-    {'cells': [(0, 4), (0, 5)], 'sum': 13},
-    {'cells': [(0,6), (0, 7)], 'sum': 4},
-    {'cells': [(0,8), (1,8)], 'sum': 10},
-    {'cells': [(1,3)], 'sum': 6},
-    {'cells': [(1,4), (2,4),(2,3),(3,3), (3,2),], 'sum': 23},
-    {'cells': [(1,5), (1,6),(1,7)], 'sum': 15},
-    {'cells': [(2,0)], 'sum': 2},
-    {'cells': [(2,5), (2,6), (2,7)], 'sum': 18},
-    {'cells': [(2,8), (3,8), (4,8), (5,8), (3,7), (4,7)], 'sum': 32},
-    {'cells': [(3,0), (4,0), (5,0)], 'sum': 21},
-    {'cells': [(3,1), (4,1),(4,2),(5,2)], 'sum': 13},
-    {'cells': [(3,4)], 'sum': 5},
-    {'cells': [(3,5), (3,6)], 'sum': 11},
-    {'cells': [(4,3), (4,4), (5,3)], 'sum': 12},
-    {'cells': [(4,5), (4,6)], 'sum': 10},
-    {'cells': [(5,1), (6,1),(6,2)], 'sum': 19},
-    {'cells': [(5,4), (5,5)], 'sum': 13},
-    {'cells': [(5,6), (5,7), (6,7)], 'sum': 9},
-    {'cells': [(6,0), (7,0)], 'sum': 8},
-    {'cells': [(6,3)], 'sum': 1},
-    {'cells': [(6,4), (6,5)], 'sum':12},
-    {'cells': [(6,6), (7,6), (7,7)], 'sum': 14},
-    {'cells': [(6,8)], 'sum': 7},
-    {'cells': [(7,1), (8,1), (8,0)], 'sum': 14},
-    {'cells': [(7,2), (7,3), (7,4), (8,4)], 'sum': 21},
-    {'cells': [(7,5), (8,5)], 'sum': 8},
-    {'cells': [(7,8)], 'sum': 5},
-    {'cells': [(8,2), (8,3)], 'sum': 12},
-    {'cells': [(8,6), (8,7),(8,8)], 'sum': 17},
+    sudoku_size = 9
+    sudoku_board = [list(map(int, row.split())) for row in content[:sudoku_size]]
 
-]
+    num_cages = int(content[sudoku_size])
+    print(num_cages)
+    cages = []
+
+    for i in range(sudoku_size + 1, sudoku_size + 1 + num_cages):
+        cage_info = content[i].split(' > ')
+        cage_cells = [(int(cell[0]), int(cell[1])) for cell in cage_info[0].split()]
+        cage_sum = int(cage_info[1]) if cage_info[1] else 0  # Handle the case of an empty string
+        cages.append({'cells': cage_cells, 'sum': cage_sum})
+
+    return sudoku_board, cages
+
+# Example usage with a file path
+file_path = 'input.txt'
+sudoku_board, cages = read_input(file_path)
 
 
 killer_sudoku = KillerSudokuCSP(sudoku_board, cages)
